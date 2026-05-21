@@ -1,10 +1,15 @@
 const getEnv = (varName, isRequired = true) => {
     const value = process.env[varName];
-    if (isRequired && (value === undefined || value === null)) {
-        process.exit(1);
+
+    if (
+        isRequired &&
+        (value === undefined || value === null || value === '')
+    ) {
+        throw new Error(`Missing environment variable: ${varName}`);
     }
+
     return value;
-}
+};
 
 const getProductionSecret = (varName, devFallback) => {
     const value = process.env[varName];
@@ -13,7 +18,16 @@ const getProductionSecret = (varName, devFallback) => {
     if (process.env.NODE_ENV !== "production" && devFallback) {
         return devFallback;
     }
-    process.exit(1);
+    throw new Error(`Missing production secret: ${varName}`);
+}
+const toNumber = (value, fallbackName) => {
+    const parsed = Number(value);
+
+    if (Number.isNaN(parsed)) {
+        getEnv(fallbackName);
+    }
+
+    return parsed;
 }
 
 module.exports = {
@@ -28,21 +42,20 @@ module.exports = {
     MYSQL_DATABASE: getEnv('MYSQL_DATABASE'),
     DB_SSL: process.env.DB_SSL === 'true',
     SESSION_COOKIE_NAME: getEnv('SESSION_COOKIE_NAME'),
-    SESSION_TTL_HOURS: parseInt(process.env.SESSION_TTL_HOURS) || getEnv('SESSION_TTL_HOURS'),
+    SESSION_TTL_HOURS: toNumber(
+    process.env.SESSION_TTL_HOURS,'SESSION_TTL_HOURS'),
     ACCESS_TOKEN_TTL_SECONDS: parseInt(process.env.ACCESS_TOKEN_TTL_SECONDS) || getEnv('ACCESS_TOKEN_TTL_SECONDS'),
     REFRESH_TOKEN_TTL_DAYS: parseInt(process.env.REFRESH_TOKEN_TTL_DAYS) || getEnv('REFRESH_TOKEN_TTL_DAYS'),
     OAUTH_STATE_TTL_MINUTES: parseInt(process.env.OAUTH_STATE_TTL_MINUTES) || getEnv('OAUTH_STATE_TTL_MINUTES'),
     AUTH_CODE_TTL_SECONDS: parseInt(process.env.AUTH_CODE_TTL_SECONDS) || getEnv('AUTH_CODE_TTL_SECONDS'),
     COOKIE_SECURE: process.env.COOKIE_SECURE === 'true',
     COOKIE_DOMAIN: process.env.COOKIE_DOMAIN,
-    // CORS_ORIGIN: JSON.parse(process.env.CORS_ORIGIN || '[]'),
-    // REDIS_URL: process.env.REDIS_URL || getEnv('REDIS_URL'),
     DEFAULT_ADMIN_EMAIL: getEnv('DEFAULT_ADMIN_EMAIL'),
     DEFAULT_ADMIN_PASSWORD: getEnv('DEFAULT_ADMIN_PASSWORD'),
     JWT_SECRET: getEnv('JWT_SECRET'),
     IDP_ACCESS_TOKEN_SECRET: getProductionSecret('IDP_ACCESS_TOKEN_SECRET', process.env.JWT_SECRET),
     IDP_ISSUER: getEnv('IDP_ISSUER', false) || getEnv('API_BASE_URL'),
-    ADMIN_PANEL_CLIENT_ID: getEnv('ADMIN_PANEL_CLIENT_ID', process.env.NODE_ENV === 'production') || 'bauth_admin_panel',
+    ADMIN_PANEL_CLIENT_ID:process.env.ADMIN_PANEL_CLIENT_ID ||(process.env.NODE_ENV !== 'production'? 'bauth_admin_panel': process.exit(1)),
     ADMIN_PANEL_CLIENT_SECRET: getProductionSecret('ADMIN_PANEL_CLIENT_SECRET', process.env.JWT_SECRET),
     SMTP_HOST: getEnv('SMTP_HOST'),
     SMTP_PORT: getEnv('SMTP_PORT'),
