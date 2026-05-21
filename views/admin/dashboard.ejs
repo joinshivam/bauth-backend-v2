@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BAuth Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <strong>BAuth IDP</strong>
+          <small>Admin control center</small>
+        </div>
+      </div>
+
+      <nav>
+        <a class="active" href="/admin">Dashboard</a>
+        <a href="/admin/services">Services</a>
+        <a href="/admin/services/create">Add service</a>
+        <a href="/admin/cors">CORS origins</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Central identity manager</p>
+          <h1>Identity dashboard</h1>
+          <p class="muted">Signed in as <strong><%= user.email %></strong></p>
+        </div>
+        <div class="button-row">
+          <a class="btn ghost" href="/admin/cors">Manage CORS</a>
+          <a class="btn" href="/admin/services/create">Add service</a>
+        </div>
+      </div>
+
+      <section class="metric-grid">
+        <div class="metric">
+          <span>Total services</span>
+          <strong><%= stats.services %></strong>
+          <small><%= stats.active_services %> active, <%= stats.inactive_services %> inactive</small>
+        </div>
+        <div class="metric">
+          <span>Users</span>
+          <strong><%= stats.users %></strong>
+          <small><%= stats.active_users %> active accounts</small>
+        </div>
+        <div class="metric">
+          <span>SSO flows</span>
+          <strong><%= stats.flows %></strong>
+          <small><%= stats.flows_24h %> started in last 24h</small>
+        </div>
+        <div class="metric">
+          <span>CORS origins</span>
+          <strong><%= stats.cors_origins %></strong>
+          <small><%= stats.cors_allowed_online %> online allowed, <%= stats.cors_blocked %> blocked</small>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>CORS controls</h2>
+            <p>Manage frontend origins that can call backend APIs with credentials.</p>
+          </div>
+          <a href="/admin/cors">Open CORS manager</a>
+        </div>
+
+        <div class="activity-list">
+          <% recentCorsOrigins.forEach(item => { %>
+            <div class="activity">
+              <div>
+                <strong><%= item.label %></strong>
+                <small><code><%= item.origin %></code> · updated <%= new Date(item.updated_at).toLocaleString() %></small>
+              </div>
+              <span>
+                <span class="status <%= item.status %>"><%= item.status %></span>
+                <span class="status <%= item.policy %>"><%= item.policy %></span>
+              </span>
+            </div>
+          <% }) %>
+          <% if (!recentCorsOrigins.length) { %>
+            <p class="empty">No CORS origins registered yet.</p>
+          <% } %>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Recently updated services</h2>
+            <p>Services trusted by the IdP and their callback surfaces.</p>
+          </div>
+          <a href="/admin/services">View all</a>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Client ID</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Callback</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% recentServices.forEach(service => { %>
+                <tr>
+                  <td><strong><%= service.name %></strong></td>
+                  <td><code><%= service.client_id %></code></td>
+                  <td><span class="pill"><%= service.client_type %></span></td>
+                  <td><span class="status <%= service.status %>"><%= service.status %></span></td>
+                  <td class="truncate"><%= service.callback_uri %></td>
+                  <td><a href="/admin/services/<%= service.id %>">Open</a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Recent SSO flow activity</h2>
+            <p>Latest authorization requests from Account Center and services.</p>
+          </div>
+        </div>
+
+        <div class="activity-list">
+          <% recentFlows.forEach(flow => { %>
+            <div class="activity">
+              <div>
+                <strong><%= flow.service_name %></strong>
+                <small><code><%= flow.client_id %></code> · <%= new Date(flow.created_at).toLocaleString() %></small>
+              </div>
+              <span class="status <%= flow.status %>"><%= flow.status %></span>
+            </div>
+          <% }) %>
+          <% if (!recentFlows.length) { %>
+            <p class="empty">No SSO flows yet.</p>
+          <% } %>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

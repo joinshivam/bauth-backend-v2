@@ -26,11 +26,12 @@ function setupSocket(io) {
     socket.emit("chat:history", getMessages());
 
     socket.on("chat:send", ({text,gender , replyTo}) => {
+      if (typeof text !== "string" || !text.trim() || text.length > 1000) return;
       const msg = {
     msgId: crypto.randomUUID(),
     senderChatId: socket.chatId,
     maskedChatId: socket.maskedChatId,
-    text,
+    text: text.trim(),
     gender,
     timestamp: Date.now(),
     replyTo: replyTo || null,

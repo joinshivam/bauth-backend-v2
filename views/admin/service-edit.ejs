@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Service</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <strong>BAuth IDP</strong>
+          <small>Admin control center</small>
+        </div>
+      </div>
+      <nav>
+        <a href="/admin">Dashboard</a>
+        <a class="active" href="/admin/services">Services</a>
+        <a href="/admin/services/create">Add service</a>
+        <a href="/admin/cors">CORS origins</a>
+      </nav>
+    </aside>
+
+    <main class="content narrow">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Update relying service</p>
+          <h1>Edit <%= service.name %></h1>
+          <p class="muted"><code><%= service.client_id %></code></p>
+        </div>
+      </div>
+
+      <section class="panel">
+        <form method="POST" class="form-grid">
+          <label>
+            Service name
+            <input name="name" value="<%= service.name %>" required>
+          </label>
+
+          <label>
+            Service type
+            <select name="client_type" required>
+              <option value="first_party" <%= service.client_type === "first_party" ? "selected" : "" %>>First-party BAuth service</option>
+              <option value="third_party" <%= service.client_type === "third_party" ? "selected" : "" %>>Third-party service</option>
+            </select>
+          </label>
+
+          <label>
+            Frontend URL
+            <input type="url" name="client_uri" value="<%= service.client_uri %>" required>
+          </label>
+
+          <label>
+            Backend URL
+            <input type="url" name="backend_uri" value="<%= service.backend_uri %>" required>
+          </label>
+
+          <label>
+            Callback URL
+            <input type="url" name="callback_uri" value="<%= service.callback_uri %>" required>
+          </label>
+
+          <label>
+            Status
+            <select name="status" required>
+              <option value="active" <%= service.status === "active" ? "selected" : "" %>>Active</option>
+              <option value="inactive" <%= service.status === "inactive" ? "selected" : "" %>>Inactive</option>
+            </select>
+          </label>
+
+          <div class="form-actions">
+            <a class="btn ghost" href="/admin/services/<%= service.id %>">Cancel</a>
+            <button type="submit">Update service</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

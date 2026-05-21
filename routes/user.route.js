@@ -2,34 +2,21 @@ const express = require("express");
 const router = express.Router();
 
 const userController = require("../controllers/user.controller");
-const { auth } = require("../middleware/auth.middleware");
+const authMiddleware = require("../middleware/auth.middleware");
 const { uploadPhoto } = require("../middleware/upload.middleware");
 
-// PUBLIC ROUTES
-router.post("/signup", userController.register);
-router.post("/login", userController.login);
-router.post("/username", userController.isUser);
-router.post("/username-check", userController.username_check);
-
-// PROTECTED ROUTES
-router.post("/verify", userController.login);
-router.post("/me", auth, userController.getMe);
-router.get("/session-history",auth, userController.getSessions);
-router.get("/all", auth, userController.getAll);
-router.post("/logout", auth, userController.logout);
-router.get("/logout-all", auth, userController.logoutAll);
-
-// UPDATE PROFILE ROUTES
-router.put("/update-name", auth, userController.updateName);
-router.put("/update-dob", auth, userController.updateDOB);
-router.put("/update-gender", auth, userController.updateGender);
-router.put("/update-username", auth, userController.updateUsername);
-router.put("/update-phone", auth, userController.updatePhone);
-router.put("/update-password", auth, userController.updatePassword);
-router.put("/update-photo", auth, uploadPhoto.single("photo"),userController.updatePhoto);
-
-// DELETE Account
-router.delete("/delete/:id", auth, userController.delete);
-
-// EXPORT ROUTER
+router.get("/auth", authMiddleware, userController.getMe);
+router.get("/auth/:username", authMiddleware, userController.getByUsername);
+router.post("/user/switch", authMiddleware, userController.switchAccount);
+router.post("/user/remove", authMiddleware, userController.removeAccount);
+router.post("/user/logout", authMiddleware, userController.logout);
+router.post("/users/logout", authMiddleware, userController.logoutAll);
+router.put("/user/update/name", authMiddleware, userController.updateName);
+router.put("/user/update/dob", authMiddleware, userController.updateDOB);
+router.put("/user/update/gender", authMiddleware, userController.updateGender);
+router.put("/user/update/username", authMiddleware, userController.updateUsername);
+router.put("/user/update/phone", authMiddleware, userController.updatePhone);
+router.put("/user/update/password", authMiddleware, userController.updatePassword);
+router.put("/user/update/photo", authMiddleware, uploadPhoto.single("photo"), userController.updatePhoto);
+router.delete("/user/delete/:id", authMiddleware, userController.delete);
 module.exports = router;

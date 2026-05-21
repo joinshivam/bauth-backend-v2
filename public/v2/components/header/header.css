@@ -1,0 +1,430 @@
+.bauth-identity-platform,
+.bauth-identity-portal {
+  all: initial;
+  color: #1f2933;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.bauth-identity-platform *,
+.bauth-identity-platform *::before,
+.bauth-identity-platform *::after,
+.bauth-identity-portal *,
+.bauth-identity-portal *::before,
+.bauth-identity-portal *::after {
+  box-sizing: border-box;
+  letter-spacing: 0;
+}
+
+.bauth-identity-header {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bauth-identity-header--fixed {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  z-index: 2147483000;
+}
+
+.bauth-avatar-button {
+  all: unset;
+  position: relative;
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(31, 41, 51, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 14px 32px rgba(31, 41, 51, 0.16),
+    0 2px 8px rgba(31, 41, 51, 0.08);
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.bauth-avatar-button:hover {
+  border-color: rgba(15, 118, 110, 0.45);
+  box-shadow:
+    0 18px 42px rgba(31, 41, 51, 0.18),
+    0 3px 10px rgba(31, 41, 51, 0.1);
+  transform: translateY(-1px);
+}
+
+.bauth-avatar-button:focus-visible {
+  outline: 3px solid rgba(20, 184, 166, 0.35);
+  outline-offset: 3px;
+}
+
+.bauth-avatar-button[data-busy="true"] .bauth-avatar-button__status {
+  opacity: 1;
+}
+
+.bauth-avatar-button__status {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: #0f766e;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.bauth-avatar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(20, 184, 166, 0.16), rgba(245, 158, 11, 0.2)),
+    #f8fafc;
+  color: #134e4a;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.bauth-avatar--sm {
+  width: 34px;
+  height: 34px;
+  font-size: 12px;
+}
+
+.bauth-avatar--md {
+  width: 36px;
+  height: 36px;
+  font-size: 13px;
+}
+
+.bauth-avatar--lg {
+  width: 68px;
+  height: 68px;
+  font-size: 22px;
+}
+
+.bauth-avatar__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bauth-avatar__initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.bauth-popup {
+  position: fixed;
+  z-index: 2147483001;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(620px, calc(100vh - 24px));
+  overflow: hidden;
+  border: 1px solid rgba(31, 41, 51, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 24px 80px rgba(31, 41, 51, 0.22),
+    0 8px 24px rgba(31, 41, 51, 0.1);
+  animation: bauth-popup-in 140ms ease-out;
+}
+
+.bauth-popup__content {
+  display: flex;
+  max-height: inherit;
+  flex-direction: column;
+  gap: 14px;
+  overflow: auto;
+  padding: 18px;
+}
+
+.bauth-popup__identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 2px;
+  text-align: center;
+}
+
+.bauth-popup__person {
+  min-width: 0;
+  width: 100%;
+}
+
+.bauth-popup__name {
+  overflow: hidden;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bauth-popup__username {
+  overflow: hidden;
+  margin-top: 3px;
+  color: #5f6f7c;
+  font-size: 13px;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bauth-popup__notice {
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 8px;
+  background: #fffbeb;
+  color: #7c2d12;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 9px 10px;
+}
+
+.bauth-popup__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.bauth-action,
+.bauth-logout,
+.bauth-account-row {
+  all: unset;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.bauth-action {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(31, 41, 51, 0.13);
+  background: #ffffff;
+  color: #1f2933;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 0 12px;
+  text-align: center;
+}
+
+.bauth-action--primary {
+  border-color: rgba(15, 118, 110, 0.34);
+  background: #0f766e;
+  color: #ffffff;
+}
+
+.bauth-action:hover {
+  border-color: rgba(15, 118, 110, 0.42);
+  background: #f3f7f6;
+}
+
+.bauth-action--primary:hover {
+  background: #115e59;
+  color: #ffffff;
+}
+
+.bauth-action:focus-visible,
+.bauth-logout:focus-visible,
+.bauth-account-row:focus-visible {
+  outline: 3px solid rgba(20, 184, 166, 0.34);
+  outline-offset: 2px;
+}
+
+.bauth-popup__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.bauth-popup__section-title {
+  color: #52616d;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.bauth-account-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bauth-account-row {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(31, 41, 51, 0.1);
+  background: #ffffff;
+  color: #1f2933;
+  padding: 9px;
+}
+
+.bauth-account-row:hover:not(:disabled) {
+  border-color: rgba(15, 118, 110, 0.28);
+  background: #f6fbfa;
+}
+
+.bauth-account-row:disabled {
+  cursor: default;
+}
+
+.bauth-account-row[aria-current="true"] {
+  border-color: rgba(15, 118, 110, 0.35);
+  background: #edfdfa;
+}
+
+.bauth-account-row__text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.bauth-account-row__name,
+.bauth-account-row__username {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bauth-account-row__name {
+  color: #111827;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.bauth-account-row__username {
+  margin-top: 2px;
+  color: #667785;
+  font-size: 12px;
+}
+
+.bauth-account-row__state {
+  color: #0f766e;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.bauth-empty-state {
+  border: 1px dashed rgba(31, 41, 51, 0.18);
+  border-radius: 8px;
+  color: #667785;
+  font-size: 13px;
+  padding: 12px;
+  text-align: center;
+}
+
+.bauth-popup__footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  border-top: 1px solid rgba(31, 41, 51, 0.1);
+  padding-top: 14px;
+}
+
+.bauth-logout {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(220, 38, 38, 0.18);
+  background: #fff7f7;
+  color: #b42318;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 0 12px;
+}
+
+.bauth-logout:hover {
+  border-color: rgba(220, 38, 38, 0.32);
+  background: #fee2e2;
+}
+
+.bauth-logout--muted {
+  border-color: rgba(31, 41, 51, 0.13);
+  background: #ffffff;
+  color: #52616d;
+}
+
+.bauth-logout--muted:hover {
+  border-color: rgba(31, 41, 51, 0.2);
+  background: #f6f8fa;
+}
+
+@keyframes bauth-popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 420px) {
+  .bauth-identity-header--fixed {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+  }
+
+  .bauth-popup {
+    right: 12px !important;
+    width: calc(100vw - 24px);
+  }
+
+  .bauth-popup__actions,
+  .bauth-popup__footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bauth-avatar-button,
+  .bauth-action,
+  .bauth-logout,
+  .bauth-account-row {
+    transition: none;
+  }
+
+  .bauth-popup {
+    animation: none;
+  }
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Service Created</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <strong>BAuth IDP</strong>
+          <small>Admin control center</small>
+        </div>
+      </div>
+      <nav>
+        <a href="/admin">Dashboard</a>
+        <a class="active" href="/admin/services">Services</a>
+        <a href="/admin/services/create">Add service</a>
+        <a href="/admin/cors">CORS origins</a>
+      </nav>
+    </aside>
+
+    <main class="content narrow">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Save this once</p>
+          <h1>Service created</h1>
+          <p class="muted">Store the client secret in the service backend. It will not be shown again.</p>
+        </div>
+      </div>
+
+      <section class="panel form-grid">
+        <label>
+          Client ID
+          <input readonly value="<%= clientId %>">
+        </label>
+        <label>
+          Client Secret
+          <input readonly value="<%= clientSecret %>">
+        </label>
+        <label>
+          Callback URI
+          <input readonly value="<%= callbackUri %>">
+        </label>
+
+        <div class="notice">
+          Use these values from your service backend when exchanging an auth code at <code>/api/idp/token</code>.
+        </div>
+
+        <div class="form-actions">
+          <a class="btn" href="/admin/services">Back to services</a>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

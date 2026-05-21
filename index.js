@@ -1,55 +1,49 @@
-require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+require('dotenv').config({ path: __dirname + '/.env' });
 const { connectDB } = require('./database/database');
 const http = require("http");
 const { Server } = require("socket.io");
 const setupSocket = require("./chat/socket");
+const { createCorsHandler, getSocketAllowedOrigins } = require("./middleware/corsHandler.middleware");
 
 
 const app = express();
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/v2/components/header", express.static(path.join(__dirname, "public/v2/components/header")));
+app.use("/v2", express.static(path.join(__dirname, "public/v2/")));
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 let DB_HEALTH = false;
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://joinshivam-bauth.vercel.app",
-  "https://sbb7308z-3000.inc1.devtunnels.ms",
-  "https://bauth-client.onrender.com",
-  "https://joinshivam-global-chat.vercel.app"
-];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true
-}));
-//app.use(cors({ origin: true, credentials: true }));
+app.use(createCorsHandler());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.set('trust proxy', true);
 const io = new Server(server, {
     cors: {
-        origin: "*",
+        origin: getSocketAllowedOrigins(),
         methods: ["GET", "POST"]
     }
 });
 (async () => {
-    console.log(`start ${new Date()}`);
+    console.log(`start ${new Date()} // ${process.env.NODE_ENV} // ${PORT}`);
     try {
         await connectDB();
         app.use("/bauth/account/signup", express.static(path.join(__dirname, "public/auth/")));
-
+        app.use("/", require("./routes/admin.route"));
         app.use("/api/media", require("./routes/media.route"));
-        app.use("/api/auth", require("./routes/user.route"));
+        app.use("/api/auth", require("./routes/auth.route"));
+        app.use("/api/idp", require("./routes/idp.route"));
+        app.use("/api", require("./routes/user.route"));
         DB_HEALTH = true;
     } catch (err) {
         console.log("Database Error : ", {
@@ -59,9 +53,6 @@ const io = new Server(server, {
         });
     }
 })()
-app.get("/", (req, res) => {
-  res.status(200).send("OK");
-});
 
 app.use("/api/health", (req, res) => {
     try {
@@ -83,6 +74,6 @@ app.get("/", (req, res) => {
     res.status(200).send("ok");
 })
 
-server.listen(PORT, "0.0.0.0", () => {
-  console.log("Auth + Chat server running on port", PORT);
+server.listen(PORT, () => {
+    console.log(`Auth server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
 });

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registered Services</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <strong>BAuth IDP</strong>
+          <small>Admin control center</small>
+        </div>
+      </div>
+      <nav>
+        <a href="/admin">Dashboard</a>
+        <a class="active" href="/admin/services">Services</a>
+        <a href="/admin/services/create">Add service</a>
+        <a href="/admin/cors">CORS origins</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Service registry</p>
+          <h1>Registered services</h1>
+          <p class="muted">Each service receives a client ID, client secret, and whitelisted callback URL.</p>
+        </div>
+        <a class="btn" href="/admin/services/create">Create service</a>
+      </div>
+
+      <section class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Client ID</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Frontend</th>
+                <th>Callback</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% services.forEach(service => { %>
+                <tr>
+                  <td><strong><%= service.name %></strong></td>
+                  <td><code><%= service.client_id %></code></td>
+                  <td><span class="pill"><%= service.client_type %></span></td>
+                  <td><span class="status <%= service.status %>"><%= service.status %></span></td>
+                  <td class="truncate"><%= service.client_uri %></td>
+                  <td class="truncate"><%= service.callback_uri %></td>
+                  <td class="actions">
+                    <a href="/admin/services/<%= service.id %>">View</a>
+                    <a href="/admin/services/<%= service.id %>/edit">Edit</a>
+                  </td>
+                </tr>
+              <% }) %>
+              <% if (!services.length) { %>
+                <tr>
+                  <td colspan="7" class="empty">No services registered yet.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

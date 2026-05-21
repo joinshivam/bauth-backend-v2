@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= service.name %> · Service Detail</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <strong>BAuth IDP</strong>
+          <small>Admin control center</small>
+        </div>
+      </div>
+      <nav>
+        <a href="/admin">Dashboard</a>
+        <a class="active" href="/admin/services">Services</a>
+        <a href="/admin/services/create">Add service</a>
+        <a href="/admin/cors">CORS origins</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Service detail</p>
+          <h1><%= service.name %></h1>
+          <p class="muted"><code><%= service.client_id %></code></p>
+        </div>
+        <a class="btn" href="/admin/services/<%= service.id %>/edit">Edit service</a>
+      </div>
+
+      <section class="metric-grid">
+        <div class="metric">
+          <span>Status</span>
+          <strong class="text-cap"><%= service.status %></strong>
+          <small>Only active services can start SSO</small>
+        </div>
+        <div class="metric">
+          <span>Type</span>
+          <strong class="text-cap"><%= service.client_type %></strong>
+          <small><%= service.first_party ? "First-party trusted app" : "External app" %></small>
+        </div>
+        <div class="metric wide">
+          <span>Callback URI</span>
+          <strong class="small-text"><%= service.callback_uri %></strong>
+          <small>Must match the service auth callback exactly</small>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Service endpoints</h2>
+            <p>These URLs are used by the SSO and account-center flow.</p>
+          </div>
+        </div>
+        <div class="detail-grid">
+          <div><span>Frontend</span><strong><%= service.client_uri %></strong></div>
+          <div><span>Backend</span><strong><%= service.backend_uri %></strong></div>
+          <div><span>Callback</span><strong><%= service.callback_uri %></strong></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Service self-management API</h2>
+            <p>The service backend can fetch or update its details using its client credentials.</p>
+          </div>
+        </div>
+        <pre>GET /api/idp/services/me
+headers:
+  x-client-id: <%= service.client_id %>
+  x-client-secret: YOUR_CLIENT_SECRET
+
+PUT /api/idp/services/me
+headers:
+  x-client-id: <%= service.client_id %>
+  x-client-secret: YOUR_CLIENT_SECRET
+body:
+  { "name": "...", "clientUri": "...", "backendUri": "...", "callbackUri": "..." }</pre>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Allowed redirects</h2>
+            <p>Only these callback URLs can receive auth codes.</p>
+          </div>
+        </div>
+        <div class="activity-list">
+          <% redirects.forEach(item => { %>
+            <div class="activity">
+              <div><strong><%= item.redirect_uri %></strong></div>
+              <span class="pill">allowed</span>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Recent flows</h2>
+            <p>Latest login requests started by this service.</p>
+          </div>
+        </div>
+        <div class="activity-list">
+          <% flows.forEach(flow => { %>
+            <div class="activity">
+              <div>
+                <strong><%= flow.flow_id %></strong>
+                <small><%= new Date(flow.created_at).toLocaleString() %> · expires <%= new Date(flow.expires_at).toLocaleString() %></small>
+              </div>
+              <span class="status <%= flow.status %>"><%= flow.status %></span>
+            </div>
+          <% }) %>
+          <% if (!flows.length) { %>
+            <p class="empty">No flows started by this service yet.</p>
+          <% } %>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

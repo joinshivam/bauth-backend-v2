@@ -6,10 +6,11 @@ function saveMessage(msg) {
 }
 function addMessage(msg) {
   messages.push(msg);
+  if (messages.length > 100) messages.shift();
 }
 
 function getMessages(limit = 100) {
-  return messages;
+  return messages.slice(-limit);
 }
 
 function blockChatId(chatId) {

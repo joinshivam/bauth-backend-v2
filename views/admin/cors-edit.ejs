@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit CORS Origin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <strong>BAuth IDP</strong>
+          <small>Admin control center</small>
+        </div>
+      </div>
+      <nav>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/services">Services</a>
+        <a href="/admin/services/create">Add service</a>
+        <a class="active" href="/admin/cors">CORS origins</a>
+      </nav>
+    </aside>
+
+    <main class="content narrow">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Update runtime CORS</p>
+          <h1>Edit <%= origin.label %></h1>
+          <p class="muted"><code><%= origin.origin %></code></p>
+        </div>
+      </div>
+
+      <% if (error) { %>
+        <p class="notice"><%= error %></p>
+      <% } %>
+
+      <section class="panel">
+        <form method="POST" class="form-grid">
+          <label>
+            Label
+            <input type="text" name="label" value="<%= origin.label %>" required>
+          </label>
+
+          <label>
+            Origin
+            <input type="url" name="origin" value="<%= origin.origin %>" required>
+          </label>
+
+          <label>
+            Description
+            <input type="text" name="description" value="<%= origin.description || '' %>">
+          </label>
+
+          <div class="form-actions">
+            <a class="btn ghost" href="/admin/cors">Cancel</a>
+            <button type="submit">Update origin</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

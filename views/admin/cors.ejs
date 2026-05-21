@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CORS Origins</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <strong>BAuth IDP</strong>
+          <small>Admin control center</small>
+        </div>
+      </div>
+      <nav>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/services">Services</a>
+        <a href="/admin/services/create">Add service</a>
+        <a class="active" href="/admin/cors">CORS origins</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Runtime CORS registry</p>
+          <h1>CORS origins</h1>
+          <p class="muted">Online and allowed origins can call authenticated backend APIs with credentials.</p>
+        </div>
+        <a class="btn" href="/admin/cors/create">Add origin</a>
+      </div>
+
+      <% if (error) { %>
+        <p class="notice"><%= error %></p>
+      <% } %>
+
+      <section class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>Origin</th>
+                <th>Status</th>
+                <th>Policy</th>
+                <th>Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% origins.forEach(item => { %>
+                <tr>
+                  <td>
+                    <strong><%= item.label %></strong>
+                    <% if (item.description) { %>
+                      <small class="muted block"><%= item.description %></small>
+                    <% } %>
+                  </td>
+                  <td class="truncate"><code><%= item.origin %></code></td>
+                  <td><span class="status <%= item.status %>"><%= item.status %></span></td>
+                  <td><span class="status <%= item.policy %>"><%= item.policy %></span></td>
+                  <td><%= new Date(item.updated_at).toLocaleString() %></td>
+                  <td class="actions action-stack">
+                    <a href="/admin/cors/<%= item.id %>/edit">Edit</a>
+
+                    <% if (item.status === "online") { %>
+                      <form method="POST" action="/admin/cors/<%= item.id %>/offline">
+                        <button type="submit" class="btn mini ghost">Mark offline</button>
+                      </form>
+                    <% } else { %>
+                      <form method="POST" action="/admin/cors/<%= item.id %>/online">
+                        <button type="submit" class="btn mini ghost">Mark online</button>
+                      </form>
+                    <% } %>
+
+                    <% if (item.policy === "allow") { %>
+                      <form method="POST" action="/admin/cors/<%= item.id %>/block">
+                        <button type="submit" class="btn mini danger">Block</button>
+                      </form>
+                    <% } else { %>
+                      <form method="POST" action="/admin/cors/<%= item.id %>/allow">
+                        <button type="submit" class="btn mini success">Allow</button>
+                      </form>
+                    <% } %>
+
+                    <form method="POST" action="/admin/cors/<%= item.id %>/delete" onsubmit="return confirm('Delete this CORS origin?')">
+                      <button type="submit" class="btn mini danger">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+              <% if (!origins.length) { %>
+                <tr>
+                  <td colspan="6" class="empty">No CORS origins registered yet.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

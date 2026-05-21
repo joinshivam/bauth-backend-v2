@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add CORS Origin</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">B</span>
+        <div>
+          <strong>BAuth IDP</strong>
+          <small>Admin control center</small>
+        </div>
+      </div>
+      <nav>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/services">Services</a>
+        <a href="/admin/services/create">Add service</a>
+        <a class="active" href="/admin/cors">CORS origins</a>
+      </nav>
+    </aside>
+
+    <main class="content narrow">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Allow a frontend origin</p>
+          <h1>Add CORS origin</h1>
+          <p class="muted">Use the origin only, without a path. Example: <code>http://localhost:3001</code></p>
+        </div>
+      </div>
+
+      <% if (error) { %>
+        <p class="notice"><%= error %></p>
+      <% } %>
+
+      <section class="panel">
+        <form method="POST" class="form-grid">
+          <label>
+            Label
+            <input type="text" name="label" placeholder="Sample Chat local" required>
+          </label>
+
+          <label>
+            Origin
+            <input type="url" name="origin" placeholder="http://localhost:3001" required>
+          </label>
+
+          <label>
+            Description
+            <input type="text" name="description" placeholder="Why this origin is trusted">
+          </label>
+
+          <div class="form-actions">
+            <a class="btn ghost" href="/admin/cors">Cancel</a>
+            <button type="submit">Add origin</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

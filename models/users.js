@@ -87,12 +87,13 @@ const Users = {
             const ValidUsername = Users.validateUsername(username);
 
             const [exists] = await Users.findByUsername(ValidUsername);
-            if (exists.length > 0) {
+            const conflict = exists.find(row => String(row.id) !== String(id));
+            if (conflict) {
                 throwError("Username already taken", "username", 400);
             }
 
             const db = getDB();
-            const [result] = await db.query("UPDATE users SET username = ? WHERE id = ?", [username, id]);
+            const [result] = await db.query("UPDATE users SET username = ? ,email = CONCAT(?, postfix) WHERE id = ?", [ValidUsername, ValidUsername, id]);
             if (result.affectedRows === 0) {
                 throwError("User not found", "username", 404);
             }
@@ -160,7 +161,7 @@ const Users = {
             [recovery, id]
         );
     },
-     setSession: async ({ id, accessToken, agent, ip, expire = ACCESS_TOTKEN_Expire }) => {
+    setSession: async ({ id, accessToken, agent, ip, expire = ACCESS_TOTKEN_Expire }) => {
         if (id === "" || !accessToken || !agent || ip === "") {
             throwError("Invalid session set parameters");
         }
@@ -173,25 +174,25 @@ const Users = {
         return Session.insertId || null;
     },
     getSessionByToken: async (token) => {
-  if (!token) return null;
+        if (!token) return null;
 
-  const db = await getDB();
-  const [rows] = await db.query(
-    `SELECT * FROM user_sessions
+        const db = await getDB();
+        const [rows] = await db.query(
+            `SELECT * FROM user_sessions
      WHERE session_token = ?
      AND revoked = 0
      AND expires_at > NOW()
      LIMIT 1`,
-    [token]
-  );
+            [token]
+        );
 
-  return rows[0] || null;
-},
+        return rows[0] || null;
+    },
     findSessionsByUser: async (userId, limit = 10) => {
         const db = getDB();
 
         return db.query(
-    `
+            `
     (
       SELECT
         id,
@@ -222,8 +223,8 @@ const Users = {
     )
     ORDER BY sort_time DESC
     `,
-    [userId, userId, limit]
-  );
+            [userId, userId, limit]
+        );
     },
     revokeSession: async (token) => {
         try {
@@ -237,7 +238,6 @@ const Users = {
             )
             return Session.affectedRows;
         } catch (err) {
-            console.log("Session REVOKED ERR:", err);
             return err;
         }
     },
@@ -253,7 +253,6 @@ const Users = {
             )
             return Session.affectedRows;
         } catch (err) {
-            console.log("Session REVOKED ERR:", err);
             return err;
         }
     },
@@ -285,7 +284,7 @@ const Users = {
     validatePhone: (phone) => {
         const ValidPhone = phone?.trim();
         // const phoneRegex = /^(\+)+([0-9]{2,3})+([0-9]{10})*$/;
-        const phoneRegex = /^([0-9]{10})*$/;
+        const phoneRegex = /^[6-9][0-9]{9}$/;
         if (!ValidPhone || typeof ValidPhone !== "string") throw new Error("Phone field cannot Blank!");
         if (!phoneRegex.test(ValidPhone)) throw new Error("Invalid Phone Number! phone no. 10 digit indian number");
         return ValidPhone;
