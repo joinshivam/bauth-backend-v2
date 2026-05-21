@@ -397,7 +397,7 @@ const connectDB = async () => {
       connectionLimit: 20,
       multipleStatements: true,
       ssl: {
-        rejectUnauthorized: false
+        rejectUnauthorized: true
       }
     });
 
