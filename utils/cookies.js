@@ -5,7 +5,7 @@ function baseCookieOptions() {
     return {
         httpOnly: true,
         secure: Env.COOKIE_SECURE || isProduction,
-        sameSite: process.env.COOKIE_SAMESITE || "lax",
+        sameSite: isProduction ? "none" : "lax",
         ...(Env.COOKIE_DOMAIN ? { domain: Env.COOKIE_DOMAIN } : {}),
     };
 }
